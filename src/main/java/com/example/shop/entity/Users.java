@@ -41,6 +41,9 @@ public class Users extends BaseEntity implements UserDetails {
     @Column(name ="phone")
     private String phone;
 
+    @Column(name ="status")
+    private Integer status;
+
     @OneToMany(mappedBy ="users" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
     private List<Cart_Item> cart_items;
 

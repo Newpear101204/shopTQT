@@ -21,10 +21,7 @@ public class usersApi {
 
     @Autowired
     private ProductService productService;
-
-
-
-
+    
     // dang nhap
     @PostMapping("/login")
     public String login ( @RequestBody LoginDTO loginDTO) {
@@ -57,6 +54,19 @@ public class usersApi {
         productService.deleteProduct(id);
     }
 
+
+    // tim kiem san pham
+    @GetMapping(name="/searchproduct")
+    public List<ProductResponse> getProductByName () {
+
+        return null;
+    }
+
+    // ban acc
+    @DeleteMapping(name ="/deleteuser/{id}")
+    public void deleteUser(@PathVariable("id") Long id) {
+        usersService.deleteUser(id);
+    }
 
 
 }

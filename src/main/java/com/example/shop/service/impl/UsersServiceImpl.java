@@ -83,6 +83,15 @@ public class UsersServiceImpl implements UsersService {
         }
         String encodedPassword = passwordEncoder.encode(registerDTO.getPassword());
         users.setPassword(encodedPassword);
+        users.setRoles(registerDTO.getRole());
+        users.setStatus(1);
+        usersRepository.save(users);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        Users users = usersRepository.findById(id).get();
+        users.setStatus(0);
         usersRepository.save(users);
     }
 }
