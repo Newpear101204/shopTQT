@@ -7,6 +7,8 @@ import com.example.shop.entity.Users;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,8 +18,7 @@ public class ProductResponse {
     private String name;
     private String describes;
     private Float price;
-    private String images;
-    private Brand brand;
-    private Users users;
-    private Categories categories;
+    private List<String> images;
+    private String brands;
+    private String categories;
 }

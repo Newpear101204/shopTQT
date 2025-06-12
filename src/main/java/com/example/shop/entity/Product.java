@@ -27,17 +27,11 @@ public class Product extends  BaseEntity{
     @Column(name ="price")
     private Float price;
 
-    @Column(name ="images")
-    private String images;
-
 
     @ManyToOne
     @JoinColumn(name = "brands_id")
     private Brand brand;
 
-    @ManyToOne
-    @JoinColumn(name = "users_id")
-    private Users users;
 
     @ManyToOne
     @JoinColumn(name = "categories_id")
@@ -52,4 +46,7 @@ public class Product extends  BaseEntity{
 
     @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
     private List<Orders_item> orders_items;
+
+    @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+    private List<ProductImage> productImages;
 }

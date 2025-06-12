@@ -3,6 +3,8 @@ package com.example.shop.api;
 import com.example.shop.model.dto.LoginDTO;
 import com.example.shop.model.dto.ProductDTO;
 import com.example.shop.model.dto.RegisterDTO;
+import com.example.shop.model.request.ProductRequest;
+import com.example.shop.model.response.LoginResponse;
 import com.example.shop.model.response.ProductResponse;
 import com.example.shop.service.ProductService;
 import com.example.shop.service.UsersService;
@@ -24,7 +26,7 @@ public class usersApi {
     
     // dang nhap
     @PostMapping("/login")
-    public String login ( @RequestBody LoginDTO loginDTO) {
+    public LoginResponse login (@RequestBody LoginDTO loginDTO) {
        return  usersService.login(loginDTO);
     }
 
@@ -40,13 +42,11 @@ public class usersApi {
         return productService.getAllProducts();
     }
 
-
     //create and update
     @PostMapping("/createproduct")
     public void createOrUpdateProduct( @RequestBody ProductDTO productDTO) {
         productService.createOrUpdateProduct(productDTO);
     }
-
 
     // delete
     @DeleteMapping("/deleteproduct/{id}")
@@ -54,12 +54,10 @@ public class usersApi {
         productService.deleteProduct(id);
     }
 
-
     // tim kiem san pham
     @GetMapping(name="/searchproduct")
-    public List<ProductResponse> getProductByName () {
-
-        return null;
+    public List<ProductResponse> getProductByName (@RequestBody ProductRequest productRequest) {
+        return productService.searchProduct(productRequest) ;
     }
 
     // ban acc

@@ -6,6 +6,8 @@ import com.example.shop.entity.Users;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,8 +18,8 @@ public class ProductDTO {
     private String name;
     private String describes;
     private Float price;
-    private String images;
+    private List<String> images;
     private Long brand;
-    private Users users;
     private Long categories;
+    private Long memories;
 }

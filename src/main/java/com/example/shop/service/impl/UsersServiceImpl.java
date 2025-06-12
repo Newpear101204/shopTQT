@@ -6,6 +6,7 @@ import com.example.shop.exception.customException.DataNotFoundException;
 import com.example.shop.exception.customException.DuplicatedUsername;
 import com.example.shop.model.dto.LoginDTO;
 import com.example.shop.model.dto.RegisterDTO;
+import com.example.shop.model.response.LoginResponse;
 import com.example.shop.repository.UsersRepository;
 import com.example.shop.service.UsersService;
 import com.example.shop.util.JwtTokenUtil;
@@ -42,7 +43,8 @@ public class UsersServiceImpl implements UsersService {
 
 
     @Override
-    public String login(LoginDTO loginDTO) {
+    public LoginResponse login(LoginDTO loginDTO) {
+        LoginResponse loginResponse = new LoginResponse();
         Users users = usersRepository.findByUsername(loginDTO.getUsername());
         if (users == null) {
             throw new DataNotFoundException("Username Or PassWord exists");
@@ -66,7 +68,10 @@ public class UsersServiceImpl implements UsersService {
             throw new BadCredentialsException("Authentication failed", ex);
         }
         try {
-            return jwtTokenUtil.generateToken(users);
+            loginResponse.setRole(users.getRoles());
+            loginResponse.setUsername(users.getUsername());
+            loginResponse.setToken(jwtTokenUtil.generateToken(users));
+            return loginResponse;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
