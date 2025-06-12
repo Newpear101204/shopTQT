@@ -71,7 +71,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> {
                     requests
                             .requestMatchers(
-                                    "/shopqtq/login","/shopqtq/register"
+                                    "/shopqtq/login","/shopqtq/register", "/shopqtq/createproduct", "/shopqtq/allproducts"
                             )
                             .permitAll()
                             .anyRequest().authenticated();

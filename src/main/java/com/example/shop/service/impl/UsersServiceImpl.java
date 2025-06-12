@@ -20,6 +20,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class UsersServiceImpl implements UsersService {
 
@@ -41,36 +44,77 @@ public class UsersServiceImpl implements UsersService {
 
 
 
+//    @Override
+//    public String login(LoginDTO loginDTO) {
+//        Users users = usersRepository.findByUsername(loginDTO.getUsername());
+//        if (users == null) {
+//            throw new DataNotFoundException("Username Or PassWord exists");
+//        }
+//        if(!passwordEncoder.matches(loginDTO.getPassword(), users.getPassword())) {
+//            throw new BadCredentialsException("Wrong phone number or password");
+//        }
+//
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+//                loginDTO.getUsername(), loginDTO.getPassword(),
+//                users.getAuthorities()
+//        );
+//     //   authenticationManager.authenticate(authenticationToken);
+//
+//        try {
+//            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+//            SecurityContextHolder.getContext().setAuthentication(authentication); // << Quan trọng
+//        } catch (AuthenticationException
+//                ex) {
+//            // Log hoặc throw lại lỗi để chắc chắn không bị swallow
+//            throw new BadCredentialsException("Authentication failed", ex);
+//        }
+//        try {
+//            return jwtTokenUtil.generateToken(users);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
     @Override
-    public String login(LoginDTO loginDTO) {
+    public Map<String, Object> login(LoginDTO loginDTO) {
         Users users = usersRepository.findByUsername(loginDTO.getUsername());
         if (users == null) {
-            throw new DataNotFoundException("Username Or PassWord exists");
-        }
-        if(!passwordEncoder.matches(loginDTO.getPassword(), users.getPassword())) {
-            throw new BadCredentialsException("Wrong phone number or password");
+            throw new DataNotFoundException("Username or Password is incorrect");
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginDTO.getUsername(), loginDTO.getPassword(),
-                users.getAuthorities()
-        );
-     //   authenticationManager.authenticate(authenticationToken);
+        // So sánh password
+        if (!passwordEncoder.matches(loginDTO.getPassword(), users.getPassword())) {
+            throw new BadCredentialsException("Wrong username or password");
+        }
+
+        // Xác thực người dùng
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.getUsername(), loginDTO.getPassword(), users.getAuthorities());
 
         try {
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication); // << Quan trọng
-        } catch (AuthenticationException
-                ex) {
-            // Log hoặc throw lại lỗi để chắc chắn không bị swallow
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (AuthenticationException ex) {
             throw new BadCredentialsException("Authentication failed", ex);
         }
+
         try {
-            return jwtTokenUtil.generateToken(users);
+            // Tạo JWT token
+            String token = jwtTokenUtil.generateToken(users);
+
+            // Trả về JSON object
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("username", users.getUsername());
+            response.put("role", users.getRoles()); // hoặc name, tùy bạn đặt trong entity
+
+            return response;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public void register(RegisterDTO registerDTO) {

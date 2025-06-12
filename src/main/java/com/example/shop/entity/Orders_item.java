@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name ="order_item")
+@Table(name ="orders_item")
 public class Orders_item extends  BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

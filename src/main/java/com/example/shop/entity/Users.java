@@ -47,8 +47,8 @@ public class Users extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy ="users" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
     private List<Cart_Item> cart_items;
 
-    @OneToMany(mappedBy ="users" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
-    private List<Product> products;
+//    @OneToMany(mappedBy ="users" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+//    private List<Product> products;
 
     @OneToMany(mappedBy ="users" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
     private List<Orders> orders;

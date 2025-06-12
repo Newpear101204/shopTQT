@@ -13,7 +13,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name ="memories")
-public class Memories extends  BaseEntity  {
+public class Memories  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,6 +21,6 @@ public class Memories extends  BaseEntity  {
     @Column(name ="capacity")
     private String capacity;
 
-    @OneToMany(mappedBy ="memories" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
-    private List<Product> products;
+//    @OneToMany(mappedBy ="memories" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+//    private List<Product> products;
 }

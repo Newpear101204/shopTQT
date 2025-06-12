@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/shopqtq/")
@@ -21,11 +22,16 @@ public class usersApi {
 
     @Autowired
     private ProductService productService;
-    
+
     // dang nhap
+//    @PostMapping("/login")
+//    public String login ( @RequestBody LoginDTO loginDTO) {
+//       return  usersService.login(loginDTO);
+//    }
+
     @PostMapping("/login")
-    public String login ( @RequestBody LoginDTO loginDTO) {
-       return  usersService.login(loginDTO);
+    public Map<String, Object> login ( @RequestBody LoginDTO loginDTO) {
+        return  usersService.login(loginDTO);
     }
 
     // dang ky
@@ -44,6 +50,7 @@ public class usersApi {
     //create and update
     @PostMapping("/createproduct")
     public void createOrUpdateProduct( @RequestBody ProductDTO productDTO) {
+        System.out.println("🟢 Đã vào controller: " + productDTO);
         productService.createOrUpdateProduct(productDTO);
     }
 

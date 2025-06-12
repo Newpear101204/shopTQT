@@ -35,6 +35,7 @@ public class JwtTokenUtil {
                     .setClaims(claims) //how to extract claims from this ?  Payload
                     .setSubject(user.getUsername())
                     .setExpiration(new Date(System.currentTimeMillis() + 2592000 * 1000L)) //30 ngày
+//                    .setExpiration(new Date(System.currentTimeMillis() + 5 * 1000L)) //5s
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                     .compact();
             return token;

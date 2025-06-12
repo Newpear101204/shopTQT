@@ -25,6 +25,6 @@ public class Categories extends  BaseEntity {
     @Column(name ="code")
     private String code;
 
-    @OneToMany(mappedBy = "categories", fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
-    private List<Product> listProduct = new ArrayList<>();
+//    @OneToMany(mappedBy = "categories", fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+//    private List<Product> listProduct = new ArrayList<>();
 }
