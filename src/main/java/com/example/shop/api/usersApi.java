@@ -3,6 +3,8 @@ package com.example.shop.api;
 import com.example.shop.model.dto.LoginDTO;
 import com.example.shop.model.dto.ProductDTO;
 import com.example.shop.model.dto.RegisterDTO;
+import com.example.shop.model.request.ProductRequest;
+import com.example.shop.model.response.LoginResponse;
 import com.example.shop.model.response.ProductResponse;
 import com.example.shop.service.ProductService;
 import com.example.shop.service.UsersService;
@@ -10,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/shopqtq/")
@@ -24,14 +25,9 @@ public class usersApi {
     private ProductService productService;
 
     // dang nhap
-//    @PostMapping("/login")
-//    public String login ( @RequestBody LoginDTO loginDTO) {
-//       return  usersService.login(loginDTO);
-//    }
-
     @PostMapping("/login")
-    public Map<String, Object> login ( @RequestBody LoginDTO loginDTO) {
-        return  usersService.login(loginDTO);
+    public LoginResponse login (@RequestBody LoginDTO loginDTO) {
+       return  usersService.login(loginDTO);
     }
 
     // dang ky
@@ -46,14 +42,11 @@ public class usersApi {
         return productService.getAllProducts();
     }
 
-
     //create and update
     @PostMapping("/createproduct")
     public void createOrUpdateProduct( @RequestBody ProductDTO productDTO) {
-        System.out.println("🟢 Đã vào controller: " + productDTO);
         productService.createOrUpdateProduct(productDTO);
     }
-
 
     // delete
     @DeleteMapping("/deleteproduct/{id}")
@@ -61,12 +54,10 @@ public class usersApi {
         productService.deleteProduct(id);
     }
 
-
     // tim kiem san pham
     @GetMapping(name="/searchproduct")
-    public List<ProductResponse> getProductByName () {
-
-        return null;
+    public List<ProductResponse> getProductByName (@RequestBody ProductRequest productRequest) {
+        return productService.searchProduct(productRequest) ;
     }
 
     // ban acc

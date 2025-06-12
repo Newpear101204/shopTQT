@@ -20,7 +20,6 @@ public class ProductDTO {
     private Float price;
     private List<String> images;
     private Long brand;
-    private Long userId;
     private Long categories;
     private Long memories;
 }

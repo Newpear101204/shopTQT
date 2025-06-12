@@ -28,6 +28,5 @@ public class Brand extends  BaseEntity {
     @Column(name ="code")
     private String code;
 
-//    @OneToMany(mappedBy ="brand" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
-//    private List<Product> listProduct = new ArrayList<>();
+
 }

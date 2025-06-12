@@ -71,9 +71,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> {
                     requests
                             .requestMatchers(
-                                    "/shopqtq/login","/shopqtq/register", "/shopqtq/createproduct", "/shopqtq/allproducts"
+                                    "/shopqtq/login","/shopqtq/register", "/shopqtq/allproducts"
                             )
                             .permitAll()
+                            .requestMatchers(POST,"shopqtq/createproduct").hasAnyRole("ADMIN")
                             .anyRequest().authenticated();
 
                 });

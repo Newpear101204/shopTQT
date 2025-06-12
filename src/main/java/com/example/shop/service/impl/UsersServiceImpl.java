@@ -6,6 +6,7 @@ import com.example.shop.exception.customException.DataNotFoundException;
 import com.example.shop.exception.customException.DuplicatedUsername;
 import com.example.shop.model.dto.LoginDTO;
 import com.example.shop.model.dto.RegisterDTO;
+import com.example.shop.model.response.LoginResponse;
 import com.example.shop.repository.UsersRepository;
 import com.example.shop.service.UsersService;
 import com.example.shop.util.JwtTokenUtil;
@@ -19,9 +20,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class UsersServiceImpl implements UsersService {
@@ -44,77 +42,40 @@ public class UsersServiceImpl implements UsersService {
 
 
 
-//    @Override
-//    public String login(LoginDTO loginDTO) {
-//        Users users = usersRepository.findByUsername(loginDTO.getUsername());
-//        if (users == null) {
-//            throw new DataNotFoundException("Username Or PassWord exists");
-//        }
-//        if(!passwordEncoder.matches(loginDTO.getPassword(), users.getPassword())) {
-//            throw new BadCredentialsException("Wrong phone number or password");
-//        }
-//
-//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-//                loginDTO.getUsername(), loginDTO.getPassword(),
-//                users.getAuthorities()
-//        );
-//     //   authenticationManager.authenticate(authenticationToken);
-//
-//        try {
-//            Authentication authentication = authenticationManager.authenticate(authenticationToken);
-//            SecurityContextHolder.getContext().setAuthentication(authentication); // << Quan trọng
-//        } catch (AuthenticationException
-//                ex) {
-//            // Log hoặc throw lại lỗi để chắc chắn không bị swallow
-//            throw new BadCredentialsException("Authentication failed", ex);
-//        }
-//        try {
-//            return jwtTokenUtil.generateToken(users);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     @Override
-    public Map<String, Object> login(LoginDTO loginDTO) {
+    public LoginResponse login(LoginDTO loginDTO) {
+        LoginResponse loginResponse = new LoginResponse();
         Users users = usersRepository.findByUsername(loginDTO.getUsername());
         if (users == null) {
-            throw new DataNotFoundException("Username or Password is incorrect");
+            throw new DataNotFoundException("Username Or PassWord exists");
+        }
+        if(!passwordEncoder.matches(loginDTO.getPassword(), users.getPassword())) {
+            throw new BadCredentialsException("Wrong phone number or password");
         }
 
-        // So sánh password
-        if (!passwordEncoder.matches(loginDTO.getPassword(), users.getPassword())) {
-            throw new BadCredentialsException("Wrong username or password");
-        }
-
-        // Xác thực người dùng
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(
-                        loginDTO.getUsername(), loginDTO.getPassword(), users.getAuthorities());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                loginDTO.getUsername(), loginDTO.getPassword(),
+                users.getAuthorities()
+        );
+     //   authenticationManager.authenticate(authenticationToken);
 
         try {
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (AuthenticationException ex) {
+            SecurityContextHolder.getContext().setAuthentication(authentication); // << Quan trọng
+        } catch (AuthenticationException
+                ex) {
+            // Log hoặc throw lại lỗi để chắc chắn không bị swallow
             throw new BadCredentialsException("Authentication failed", ex);
         }
-
         try {
-            // Tạo JWT token
-            String token = jwtTokenUtil.generateToken(users);
-
-            // Trả về JSON object
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", token);
-            response.put("username", users.getUsername());
-            response.put("role", users.getRoles()); // hoặc name, tùy bạn đặt trong entity
-
-            return response;
+            loginResponse.setRole(users.getRoles());
+            loginResponse.setUsername(users.getUsername());
+            loginResponse.setToken(jwtTokenUtil.generateToken(users));
+            return loginResponse;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
 
     @Override
     public void register(RegisterDTO registerDTO) {

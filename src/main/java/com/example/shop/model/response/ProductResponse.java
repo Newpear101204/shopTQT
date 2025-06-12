@@ -20,7 +20,6 @@ public class ProductResponse {
     private String describes;
     private Float price;
     private List<String> images;
-    private String brand;
-    private Users users;
+    private String brands;
     private String categories;
 }
