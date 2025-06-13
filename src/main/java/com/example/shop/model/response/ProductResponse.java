@@ -21,4 +21,5 @@ public class ProductResponse {
     private List<String> images;
     private String brands;
     private String categories;
+    private List<String> memories;
 }

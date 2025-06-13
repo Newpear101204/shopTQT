@@ -71,7 +71,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of("/shopqtq/login", "POST"),
                Pair.of("/shopqtq/register", "POST"),
                 Pair.of("/shopqtq/allproducts", "GET"),
-                Pair.of("/shopqtq/searchproduct","GET")
+                Pair.of("/shopqtq/searchproducts","GET")
+
         );
         String first = request.getServletPath();
         String  second = request.getMethod();

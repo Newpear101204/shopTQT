@@ -1,7 +1,9 @@
 package com.example.shop.service.impl;
 
+import com.example.shop.entity.Memories;
 import com.example.shop.entity.Product;
 import com.example.shop.entity.ProductImage;
+import com.example.shop.entity.ProductMemories;
 import com.example.shop.model.dto.ProductDTO;
 import com.example.shop.model.request.ProductRequest;
 import com.example.shop.model.response.ProductResponse;
@@ -53,6 +55,10 @@ public class ProductServiceImpl implements ProductService {
             productResponse.setPrice(product.getPrice());
             productResponse.setBrands(brandRepository.findById(product.getBrand().getId()).get().getName());
             productResponse.setCategories(categoriesRepository.findById(product.getCategories().getId()).get().getName());
+            List<String> stringCapicity= product.getMemories().stream()
+                    .map(Memories::getCapacity)
+                    .collect(Collectors.toList());
+            productResponse.setMemories(stringCapicity);
             productResponses.add(productResponse);
         }
         return productResponses;
@@ -73,14 +79,16 @@ public class ProductServiceImpl implements ProductService {
         List<ProductImage> imageEntities = productDTO.getImages().stream()
                 .map(url -> ProductImage.builder()
                         .url(url)
-                        .product(product)
+                        .productt(product)
                         .build())
                 .collect(Collectors.toList());
 
         product.setProductImages(imageEntities);
         product.setBrand(brandRepository.findById(productDTO.getBrand()).get());
         product.setCategories(categoriesRepository.findById(productDTO.getCategories()).get());
-        product.setMemories(memoriesRepository.findById(productDTO.getMemories()).get());
+        List<Long> memo = productDTO.getMemories();
+        List<Memories> memoriesEntities = memoriesRepository.findAllById(memo);
+       product.setMemories(memoriesEntities);
         productRepository.save(product);
 
     }
@@ -90,7 +98,22 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.searchProducts(productRequest);
         List<ProductResponse> productResponses = new ArrayList<>();
         for (Product product : products) {
-            productResponses.add(modelMapper.map(product, ProductResponse.class));
+           // productResponses.add(modelMapper.map(product, ProductResponse.class));
+            ProductResponse productResponse = new ProductResponse();
+            List<String> imageUrls = product.getProductImages().stream()
+                    .map(ProductImage::getUrl)
+                    .collect(Collectors.toList());
+            productResponse.setImages(imageUrls);
+            productResponse.setName(product.getName());
+            productResponse.setDescribes(product.getDescribes());
+            productResponse.setPrice(product.getPrice());
+            productResponse.setBrands(brandRepository.findById(product.getBrand().getId()).get().getName());
+            productResponse.setCategories(categoriesRepository.findById(product.getCategories().getId()).get().getName());
+            List<String> stringCapicity= product.getMemories().stream()
+                    .map(Memories::getCapacity)
+                    .collect(Collectors.toList());
+            productResponse.setMemories(stringCapicity);
+            productResponses.add(productResponse);
         }
         if (productRequest.getSort() == 1){
             productResponses.sort(Comparator.comparingDouble(ProductResponse::getPrice));
