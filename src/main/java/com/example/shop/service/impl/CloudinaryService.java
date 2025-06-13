@@ -2,9 +2,6 @@ package com.example.shop.service.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,17 +14,12 @@ import java.nio.file.Files;
 import java.util.*;
 
 @Service
-
 public class CloudinaryService {
 
-    private  Cloudinary cloudinary;
+    private final Cloudinary cloudinary;
 
-    public CloudinaryService() {
-        Map<String, String> valuesMap = new HashMap<>();
-        valuesMap.put("cloud_name", "dmkxepkiw");
-        valuesMap.put("api_key", "248851859778315");
-        valuesMap.put("api_secret", "hFEwWUlpvqSDOG1PP5VlZ9oL9TU");
-        cloudinary = new Cloudinary(valuesMap);
+    public CloudinaryService(Cloudinary cloudinary) {
+        this.cloudinary = cloudinary;
     }
 
     public List<String> uploadMultipleFiles(MultipartFile[] multipartFiles) throws IOException {

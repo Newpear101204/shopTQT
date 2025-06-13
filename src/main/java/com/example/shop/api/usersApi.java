@@ -8,7 +8,9 @@ import com.example.shop.model.response.LoginResponse;
 import com.example.shop.model.response.ProductResponse;
 import com.example.shop.service.ProductService;
 import com.example.shop.service.UsersService;
+
 import com.example.shop.service.impl.CloudinaryService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +34,7 @@ public class usersApi {
     @Autowired
     private CloudinaryService cloudinaryService;
 
+
     // dang nhap
     @PostMapping("/login")
     public LoginResponse login (@RequestBody LoginDTO loginDTO) {
@@ -50,25 +53,24 @@ public class usersApi {
         return productService.getAllProducts();
     }
 
-    //create and update
+   // create and update
 //    @PostMapping("/createproduct")
 //    public void createOrUpdateProduct( @RequestBody ProductDTO productDTO) {
 //        productService.createOrUpdateProduct(productDTO);
 //    }
 
-    @PostMapping(value = "/createproduct", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/createproduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createOrUpdateProduct(
-            @RequestPart("product") ProductDTO productDTO,
+            @RequestPart("product") String productJson,
             @RequestPart("images") MultipartFile[] images
     ) {
         try {
-            // 1. Upload ảnh lên Cloudinary
+            // Dùng Jackson để parse JSON thủ công
+            ObjectMapper objectMapper = new ObjectMapper();
+            ProductDTO productDTO = objectMapper.readValue(productJson, ProductDTO.class);
+
             List<String> imageUrls = cloudinaryService.uploadMultipleFiles(images);
-
-            // 2. Set URLs vào DTO
             productDTO.setImages(imageUrls);
-
-            // 3. Lưu product
             productService.createOrUpdateProduct(productDTO);
 
             return ResponseEntity.ok("Product created successfully");
