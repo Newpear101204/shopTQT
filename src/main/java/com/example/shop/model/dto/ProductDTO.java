@@ -21,5 +21,5 @@ public class ProductDTO {
     private List<String> images;
     private Long brand;
     private Long categories;
-    private Long memories;
+    private List<Long> memories;
 }

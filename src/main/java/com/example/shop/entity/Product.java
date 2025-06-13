@@ -33,13 +33,18 @@ public class Product extends  BaseEntity{
     private Brand brand;
 
 
+
     @ManyToOne
     @JoinColumn(name = "categories_id")
     private Categories categories;
 
-    @ManyToOne
-    @JoinColumn(name = "memories_id")
-    private Memories memories;
+    @ManyToMany(fetch =  FetchType.LAZY )
+    @JoinTable(name = "product_memories",
+            joinColumns = @JoinColumn(name = "product_id" , nullable = false),
+            inverseJoinColumns =  @JoinColumn(name ="memories_id", nullable= false))
+    private List<Memories> memories;
+
+
 
     @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
     private List<Cart_Item> cart_items;
@@ -47,6 +52,8 @@ public class Product extends  BaseEntity{
     @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
     private List<Orders_item> orders_items;
 
-    @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+    @OneToMany(mappedBy ="productt" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
     private List<ProductImage> productImages;
+
+
 }

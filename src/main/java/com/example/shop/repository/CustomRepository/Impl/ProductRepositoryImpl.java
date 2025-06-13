@@ -38,8 +38,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         StringBuilder sql = new StringBuilder("SELECT b.* FROM PRODUCT b ");
         sql.append(" WHERE 1 = 1 ");
         sql.append(CheckSQL(productRequest));
-        Query quey = entityManager.createNativeQuery(sql.toString(), Users.class);
-        List<Users> arr = quey.getResultList();
+        Query quey = entityManager.createNativeQuery(sql.toString(), Product.class);
+        List<Product> arr = quey.getResultList();
         return quey.getResultList();
     }
 }
