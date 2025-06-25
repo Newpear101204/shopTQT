@@ -3,9 +3,14 @@ package com.example.shop.api;
 import com.example.shop.model.dto.LoginDTO;
 import com.example.shop.model.dto.ProductDTO;
 import com.example.shop.model.dto.RegisterDTO;
+import com.example.shop.model.request.OrderRequest;
 import com.example.shop.model.request.ProductRequest;
+import com.example.shop.model.request.ProductToCartRequest;
+import com.example.shop.model.response.CartItemResponse;
 import com.example.shop.model.response.LoginResponse;
 import com.example.shop.model.response.ProductResponse;
+import com.example.shop.service.CartItemService;
+import com.example.shop.service.OrdersService;
 import com.example.shop.service.ProductService;
 import com.example.shop.service.UsersService;
 
@@ -32,7 +37,13 @@ public class usersApi {
     private ProductService productService;
 
     @Autowired
+    private CartItemService cartItemService;
+
+    @Autowired
     private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private OrdersService ordersService;
 
 
     // dang nhap
@@ -96,6 +107,27 @@ public class usersApi {
     @DeleteMapping("/deleteuser/{id}")
     public void deleteUser(@PathVariable("id") Long id) {
         usersService.deleteUser(id);
+    }
+
+
+    @PostMapping("/cart")
+    public void ChooseProduct (@RequestBody ProductToCartRequest productToCartRequest) {
+        usersService.ChooseProduct(productToCartRequest);
+    }
+
+    @DeleteMapping("/cart/{id}")
+    public void DeleteCartItem (@PathVariable("id") Long id) {
+        cartItemService.deleteCartItem(id);
+    }
+
+    @GetMapping("/cart")
+    public List<CartItemResponse> GetCartItem (){
+        return cartItemService.getCartItems();
+    }
+
+    @PostMapping("/order")
+    public void Order (@RequestBody OrderRequest orderRequest){
+        ordersService.addOrder(orderRequest);
     }
 
 

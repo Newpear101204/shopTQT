@@ -44,11 +44,17 @@ public class Users extends BaseEntity implements UserDetails {
     @Column(name ="status")
     private Integer status;
 
-    @OneToMany(mappedBy ="users" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+   @OneToMany(mappedBy ="users" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL )
     private List<Cart_Item> cart_items;
 
 
-    @OneToMany(mappedBy ="users" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+    @ManyToMany(fetch =  FetchType.LAZY )
+    @JoinTable(name = "cart_item",
+            joinColumns = @JoinColumn(name = "users_id" , nullable = false),
+            inverseJoinColumns =  @JoinColumn(name ="products_id", nullable= false))
+    private List<Product> products ;
+
+    @OneToMany(mappedBy ="users" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL )
     private List<Orders> orders;
 
     @Override

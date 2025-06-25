@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -44,15 +45,18 @@ public class Product extends  BaseEntity{
             inverseJoinColumns =  @JoinColumn(name ="memories_id", nullable= false))
     private List<Memories> memories;
 
+    @ManyToMany(mappedBy = "products" , fetch = FetchType.EAGER )
+    private List<Users> users = new ArrayList<>();
 
 
-    @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+
+    @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL )
     private List<Cart_Item> cart_items;
 
-    @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+    @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL)
     private List<Orders_item> orders_items;
 
-    @OneToMany(mappedBy ="productt" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+    @OneToMany(mappedBy ="productt" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL )
     private List<ProductImage> productImages;
 
 

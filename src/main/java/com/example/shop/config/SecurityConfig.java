@@ -76,6 +76,10 @@ public class SecurityConfig {
                             )
                             .permitAll()
                             .requestMatchers(POST,"shopqtq/createproduct").hasAnyRole("ADMIN")
+                            .requestMatchers(POST,"shopqtq/cart").hasAnyRole("CUS")
+                            .requestMatchers(GET,"shopqtq/cart").hasAnyRole("CUS")
+                            .requestMatchers(GET,"shopqtq/order").hasAnyRole("CUS")
+                            .requestMatchers(GET,"shopqtq/cart").hasAnyRole("CUS")
                             .anyRequest().authenticated();
 
                 });

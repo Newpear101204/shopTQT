@@ -7,10 +7,7 @@ import com.example.shop.entity.ProductMemories;
 import com.example.shop.model.dto.ProductDTO;
 import com.example.shop.model.request.ProductRequest;
 import com.example.shop.model.response.ProductResponse;
-import com.example.shop.repository.BrandRepository;
-import com.example.shop.repository.CategoriesRepository;
-import com.example.shop.repository.MemoriesRepository;
-import com.example.shop.repository.ProductRepository;
+import com.example.shop.repository.*;
 import com.example.shop.service.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +34,9 @@ public class ProductServiceImpl implements ProductService {
     private MemoriesRepository memoriesRepository;
 
     @Autowired
+    private ProductImageRepository productImageRepository;
+
+    @Autowired
     ModelMapper modelMapper;
 
 
@@ -46,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductResponse> productResponses = new ArrayList<>();
         for (Product product : products) {
             ProductResponse productResponse = new ProductResponse();
+            productResponse.setId(product.getId());
             List<String> imageUrls = product.getProductImages().stream()
                     .map(ProductImage::getUrl)
                     .collect(Collectors.toList());
@@ -73,6 +74,15 @@ public class ProductServiceImpl implements ProductService {
     public void createOrUpdateProduct(ProductDTO productDTO) {
       //  Product product = modelMapper.map(productDTO, Product.class);
         Product product = new Product();
+        product.setId(productDTO.getId());
+        if (productDTO.getId() != null){
+            product.setCreatedBy( productRepository.findById(productDTO.getId()).get().getCreatedBy());
+            product.setCreatedDate(productRepository.findById(productDTO.getId()).get().getCreatedDate());
+            List<ProductImage> productImages = productImageRepository.findByProducttId(productDTO.getId());
+            for (ProductImage productImage : productImages) {
+                productImageRepository.deleteById(productImage.getId());
+            }
+        }
         product.setName(productDTO.getName());
         product.setDescribes(productDTO.getDescribes());
         product.setPrice(productDTO.getPrice());
