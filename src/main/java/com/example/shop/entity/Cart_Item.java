@@ -17,6 +17,13 @@ public class Cart_Item extends  BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name ="number")
+    private int number;
+
+    @Column(name ="memories_id")
+    private Long memoriesId;
+
+
     @ManyToOne
     @JoinColumn(name ="products_id")
     private Product product;

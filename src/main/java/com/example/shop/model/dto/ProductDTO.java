@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductDTO {
-    Long id ;
+    private Long id ;
     private String name;
     private String describes;
     private Float price;

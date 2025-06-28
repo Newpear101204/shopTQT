@@ -28,10 +28,13 @@ public class Orders extends  BaseEntity{
     @Column(name ="shipping_adress")
     private String shippingAdress;
 
+    @Column(name ="ship_fee")
+    private int shipFee;
+
     @ManyToOne
     @JoinColumn(name ="users_id")
     private Users users;
 
-    @OneToMany(mappedBy ="orders" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+    @OneToMany(mappedBy ="orders" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL )
     private List<Orders_item> orders_items;
 }
