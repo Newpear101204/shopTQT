@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -65,9 +67,12 @@ public class usersApi {
             @RequestPart("images") MultipartFile[] images
     ) {
         try {
+            // Ép charset UTF-8 từ raw byte
+            String utf8Json = new String(productJson.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+
             // Dùng Jackson để parse JSON thủ công
             ObjectMapper objectMapper = new ObjectMapper();
-            ProductDTO productDTO = objectMapper.readValue(productJson, ProductDTO.class);
+            ProductDTO productDTO = objectMapper.readValue(utf8Json, ProductDTO.class);
 
             List<String> imageUrls = cloudinaryService.uploadMultipleFiles(images);
             productDTO.setImages(imageUrls);
@@ -98,5 +103,15 @@ public class usersApi {
         usersService.deleteUser(id);
     }
 
+    // xóa ảnh
+    @DeleteMapping("/deleteproductimage")
+    public ResponseEntity<?> deleteProductImage(
+            @RequestParam Long productId,
+            @RequestParam String url
+    ) {
+        String decodedUrl = URLDecoder.decode(url, StandardCharsets.UTF_8);
+        productService.deleteImages(productId, decodedUrl);
+        return ResponseEntity.ok("Deleted");
+    }
 
 }

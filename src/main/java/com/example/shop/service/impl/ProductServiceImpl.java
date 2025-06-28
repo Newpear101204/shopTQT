@@ -4,18 +4,18 @@ import com.example.shop.entity.Memories;
 import com.example.shop.entity.Product;
 import com.example.shop.entity.ProductImage;
 import com.example.shop.entity.ProductMemories;
+import com.example.shop.exception.customException.DataNotFoundException;
 import com.example.shop.model.dto.ProductDTO;
 import com.example.shop.model.request.ProductRequest;
 import com.example.shop.model.response.ProductResponse;
-import com.example.shop.repository.BrandRepository;
-import com.example.shop.repository.CategoriesRepository;
-import com.example.shop.repository.MemoriesRepository;
-import com.example.shop.repository.ProductRepository;
+import com.example.shop.repository.*;
 import com.example.shop.service.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -37,6 +37,9 @@ public class ProductServiceImpl implements ProductService {
     private MemoriesRepository memoriesRepository;
 
     @Autowired
+    private ProductImageRepository productImageRepository;
+
+    @Autowired
     ModelMapper modelMapper;
 
 
@@ -46,6 +49,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductResponse> productResponses = new ArrayList<>();
         for (Product product : products) {
             ProductResponse productResponse = new ProductResponse();
+            productResponse.setId(product.getId());
             List<String> imageUrls = product.getProductImages().stream()
                     .map(ProductImage::getUrl)
                     .collect(Collectors.toList());
@@ -59,6 +63,7 @@ public class ProductServiceImpl implements ProductService {
                     .map(Memories::getCapacity)
                     .collect(Collectors.toList());
             productResponse.setMemories(stringCapicity);
+            productResponse.setBestseller(product.isBestseller());
             productResponses.add(productResponse);
         }
         return productResponses;
@@ -73,6 +78,7 @@ public class ProductServiceImpl implements ProductService {
     public void createOrUpdateProduct(ProductDTO productDTO) {
       //  Product product = modelMapper.map(productDTO, Product.class);
         Product product = new Product();
+        product.setId(productDTO.getId());
         product.setName(productDTO.getName());
         product.setDescribes(productDTO.getDescribes());
         product.setPrice(productDTO.getPrice());
@@ -88,7 +94,8 @@ public class ProductServiceImpl implements ProductService {
         product.setCategories(categoriesRepository.findById(productDTO.getCategories()).get());
         List<Long> memo = productDTO.getMemories();
         List<Memories> memoriesEntities = memoriesRepository.findAllById(memo);
-       product.setMemories(memoriesEntities);
+        product.setMemories(memoriesEntities);
+        product.setBestseller(productDTO.isBestseller());
         productRepository.save(product);
 
     }
@@ -121,5 +128,18 @@ public class ProductServiceImpl implements ProductService {
             productResponses.sort(Comparator.comparingDouble(ProductResponse::getPrice).reversed());
         }
         return productResponses;
+    }
+
+    @Override
+    public void deleteImages(Long productId, String imageUrlEncoded) {
+        ProductImage image = productImageRepository
+                .findByUrlAndProducttId(imageUrlEncoded, productId)
+                .orElseThrow(() -> new DataNotFoundException("Ảnh không tồn tại với sản phẩm này."));
+
+        productImageRepository.delete(image);
+
+        // Nếu có lưu ảnh local hoặc S3 thì xóa ở đây
+        // fileService.deleteByPath(decodedUrl); // nếu có implement
+
     }
 }

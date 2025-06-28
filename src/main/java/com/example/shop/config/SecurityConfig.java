@@ -4,6 +4,7 @@ package com.example.shop.config;
 import com.example.shop.filter.JwtTokenFilter;
 import com.example.shop.service.impl.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.List;
@@ -72,10 +74,12 @@ public class SecurityConfig {
                     requests
                             .requestMatchers(
                                     "/shopqtq/login","/shopqtq/register", "/shopqtq/allproducts" ,
-                                    "/shopqtq/searchproducts"
+                                    "/shopqtq/searchproducts", "shopqtq/chatbot"
                             )
                             .permitAll()
-                            .requestMatchers(POST,"shopqtq/createproduct").hasAnyRole("ADMIN")
+                            .requestMatchers(POST,"/shopqtq/createproduct").hasAnyRole("ADMIN")
+                            .requestMatchers(DELETE, "/shopqtq/deleteproduct/{id}").hasAnyRole("ADMIN")
+                            .requestMatchers(DELETE, "/shopqtq/deleteproductimage").hasAnyRole("ADMIN")
                             .anyRequest().authenticated();
 
                 });

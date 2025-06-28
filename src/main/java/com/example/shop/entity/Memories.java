@@ -14,7 +14,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name ="memories")
-public class Memories extends  BaseEntity  {
+public class Memories  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

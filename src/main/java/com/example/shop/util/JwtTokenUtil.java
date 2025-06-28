@@ -1,7 +1,6 @@
 package com.example.shop.util;
 
 
-
 import com.example.shop.entity.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -25,7 +24,7 @@ public class JwtTokenUtil {
 
     private String secretKey = "TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI=";
 
-    public String generateToken(Users user) throws Exception{
+    public String generateToken(Users user) throws Exception {
         //properties => claims
         Map<String, Object> claims = new HashMap<>();
         //this.generateSecretKey();
@@ -39,9 +38,9 @@ public class JwtTokenUtil {
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                     .compact();
             return token;
-        }catch (Exception e) {
+        } catch (Exception e) {
             //you can "inject" Logger, instead System.out.println
-            throw new InvalidParameterException("Cannot create jwt token, error: "+e.getMessage());
+            throw new InvalidParameterException("Cannot create jwt token, error: " + e.getMessage());
             //return null;
         }
     }
@@ -60,7 +59,7 @@ public class JwtTokenUtil {
                 .getBody();
     }
 
-    public  <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = this.extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
@@ -70,9 +69,11 @@ public class JwtTokenUtil {
         Date expirationDate = this.extractClaim(token, Claims::getExpiration);
         return expirationDate.before(new Date());
     }
+
     public String extractPhoneNumber(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+
     public boolean validateToken(String token, UserDetails userDetails) {
         String phoneNumber = extractPhoneNumber(token);
         return (phoneNumber.equals(userDetails.getUsername()))

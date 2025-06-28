@@ -13,5 +13,5 @@ public interface ProductService {
     void deleteProduct(Long id);
     void createOrUpdateProduct(ProductDTO productDTO);
     List<ProductResponse> searchProduct(ProductRequest productRequest);
-
+    void deleteImages(Long productId, String imageUrlEncoded);
 }

@@ -27,6 +27,8 @@ public class Product extends  BaseEntity{
     @Column(name ="price")
     private Float price;
 
+    @Column(name ="bestseller")
+    private boolean bestseller;
 
     @ManyToOne
     @JoinColumn(name = "brands_id")
@@ -46,13 +48,13 @@ public class Product extends  BaseEntity{
 
 
 
-    @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+    @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL)
     private List<Cart_Item> cart_items;
 
-    @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+    @OneToMany(mappedBy ="product" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL)
     private List<Orders_item> orders_items;
 
-    @OneToMany(mappedBy ="productt" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL , orphanRemoval =  true)
+    @OneToMany(mappedBy ="productt" , fetch = FetchType.LAZY , cascade =  CascadeType.ALL)
     private List<ProductImage> productImages;
 
 
