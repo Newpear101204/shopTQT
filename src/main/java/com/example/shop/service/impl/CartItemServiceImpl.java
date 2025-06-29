@@ -5,6 +5,7 @@ import com.example.shop.entity.Users;
 import com.example.shop.model.response.CartItemResponse;
 import com.example.shop.repository.CartItemRepository;
 import com.example.shop.repository.MemoriesRepository;
+import com.example.shop.repository.ProductRepository;
 import com.example.shop.repository.UsersRepository;
 import com.example.shop.service.CartItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class CartItemServiceImpl implements CartItemService {
     @Autowired
     private MemoriesRepository memoriesRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public void deleteCartItem(Long cartItemId) {
@@ -40,11 +43,14 @@ public class CartItemServiceImpl implements CartItemService {
         List<CartItemResponse> cartItemResponseList = new ArrayList<>();
         for (Cart_Item cartItem : cartItemList) {
             CartItemResponse cartItemResponse = new CartItemResponse();
-            cartItemResponse.setId(cartItemResponse.getId());
+            cartItemResponse.setId(cartItem.getId());
             cartItemResponse.setName(cartItem.getProduct().getName());
-            cartItemResponse.setCapacity(memoriesRepository.findById(cartItem.getMemoriesId()).get().getCapacity());
+            cartItemResponse.setPrice(cartItem.getProduct().getPrice());
+//            cartItemResponse.setCapacity(memoriesRepository.findById(cartItem.getMemoriesId()).get().getCapacity());
+            cartItemResponse.setCapacity(cartItem.getMemoriesId().toString());
             cartItemResponse.setNumber(cartItem.getNumber());
             cartItemResponse.setImages(cartItem.getProduct().getProductImages().get(0).getUrl());
+            cartItemResponse.setProductId(cartItem.getProduct().getId());
             cartItemResponseList.add(cartItemResponse);
 
         }

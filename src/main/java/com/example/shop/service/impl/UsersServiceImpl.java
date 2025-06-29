@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsersServiceImpl implements UsersService {
@@ -114,16 +115,40 @@ public class UsersServiceImpl implements UsersService {
         usersRepository.save(users);
     }
 
+//    @Override
+//    public void ChooseProduct(ProductToCartRequest productToCartRequest) {
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        Users users = usersRepository.findByUsername(username);
+//        Product product = productRepository.findById(productToCartRequest.getProductId()).get();
+//        Cart_Item cartItem = new Cart_Item();
+//        cartItem.setUsers(users);
+//        cartItem.setProduct(product);
+//        cartItem.setNumber(productToCartRequest.getNumber());
+//        cartItem.setMemoriesId(productToCartRequest.getMemoriesId());
+//        cartItemRepository.save(cartItem);
+//    }
+
     @Override
     public void ChooseProduct(ProductToCartRequest productToCartRequest) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username);
-        Product product = productRepository.findById(productToCartRequest.getProductId()).get();
-        Cart_Item cartItem = new Cart_Item();
-        cartItem.setUsers(users);
-        cartItem.setProduct(product);
-        cartItem.setNumber(productToCartRequest.getNumber());
-        cartItem.setMemoriesId(productToCartRequest.getMemoriesId());
-        cartItemRepository.save(cartItem);
+        Product product = productRepository.findById(productToCartRequest.getProductId()).orElseThrow();
+        Long memoriesId = productToCartRequest.getMemoriesId();
+
+        Optional<Cart_Item> existingItemOpt = cartItemRepository.findByUsersAndProductAndMemoriesId(users, product, memoriesId);
+
+        if (existingItemOpt.isPresent()) {
+            Cart_Item existingItem = existingItemOpt.get();
+            existingItem.setNumber(productToCartRequest.getNumber());
+            cartItemRepository.save(existingItem);
+        } else {
+            Cart_Item cartItem = new Cart_Item();
+            cartItem.setUsers(users);
+            cartItem.setProduct(product);
+            cartItem.setMemoriesId(memoriesId);
+            cartItem.setNumber(1);
+            cartItemRepository.save(cartItem);
+        }
     }
+
 }

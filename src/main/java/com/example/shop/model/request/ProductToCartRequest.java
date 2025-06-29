@@ -13,6 +13,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductToCartRequest {
     Long productId;
-    int memoriesId;
+    Long memoriesId;
     int number;
 }

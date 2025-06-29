@@ -17,5 +17,6 @@ public class CartItemResponse {
     String images ;
     int number ;
     String capacity;
-
+    Float price;
+    Long productId;
 }

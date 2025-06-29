@@ -31,6 +31,9 @@ public class Orders extends  BaseEntity{
     @Column(name ="ship_fee")
     private int shipFee;
 
+    @Column(name ="payment_method")
+    private String paymentMethod;
+
     @ManyToOne
     @JoinColumn(name ="users_id")
     private Users users;
