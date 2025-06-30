@@ -63,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
                     .map(Memories::getCapacity)
                     .collect(Collectors.toList());
             productResponse.setMemories(stringCapicity);
-            productResponse.setBestseller(product.isBestseller());
+            productResponse.setBestseller(product.getBestseller());
             productResponses.add(productResponse);
         }
         return productResponses;
@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
         List<Long> memo = productDTO.getMemories();
         List<Memories> memoriesEntities = memoriesRepository.findAllById(memo);
         product.setMemories(memoriesEntities);
-        product.setBestseller(productDTO.isBestseller());
+        product.setBestseller(productDTO.getBestseller());
         productRepository.save(product);
 
     }

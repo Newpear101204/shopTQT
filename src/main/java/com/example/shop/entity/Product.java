@@ -29,7 +29,7 @@ public class Product extends  BaseEntity{
     private Float price;
 
     @Column(name ="bestseller")
-    private boolean bestseller;
+    private int bestseller;
 
     @ManyToOne
     @JoinColumn(name = "brands_id")

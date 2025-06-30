@@ -146,7 +146,7 @@ public class UsersServiceImpl implements UsersService {
             cartItem.setUsers(users);
             cartItem.setProduct(product);
             cartItem.setMemoriesId(memoriesId);
-            cartItem.setNumber(1);
+            cartItem.setNumber(productToCartRequest.getNumber());
             cartItemRepository.save(cartItem);
         }
     }

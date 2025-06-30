@@ -5,7 +5,9 @@ import com.example.shop.entity.Cart_Item;
 import com.example.shop.entity.Users;
 import com.example.shop.repository.UsersRepository;
 import com.example.shop.util.VnPayUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -26,6 +31,9 @@ public class VnPayController {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private HttpServletRequest request;
 
 //    @PostMapping("/create-payment")
 //    public ResponseEntity<?> createPayment(@RequestBody Map<String, Object> payload) {
@@ -58,7 +66,7 @@ public class VnPayController {
 //    }
 
     @PostMapping("/create-payment")
-    public ResponseEntity<?> createPayment() {
+    public ResponseEntity<?> createPayment() throws Exception {
         // Lấy username từ context bảo mật
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = usersRepository.findByUsername(username);
@@ -76,7 +84,8 @@ public class VnPayController {
         String vnp_TxnRef = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
         String vnp_OrderInfo = "Thanh toan don hang";
         String orderType = "other";
-        String vnp_IpAddr = "127.0.0.1"; // Hoặc lấy từ request sau
+//        String vnp_IpAddr = "127.0.0.1"; // Hoặc lấy từ request sau
+        String vnp_IpAddr = request.getRemoteAddr();
         String vnp_BankCode = "VNBANK";
 
         Map<String, String> vnp_Params = new TreeMap<>();
@@ -96,6 +105,18 @@ public class VnPayController {
         formatter.setTimeZone(TimeZone.getTimeZone("Etc/GMT+7"));
         vnp_Params.put("vnp_CreateDate", formatter.format(new Date()));
         vnp_Params.put("vnp_SecureHashType", "HmacSHA512");
+        //
+        vnp_Params.put("vnp_BankCode", vnp_BankCode);
+        StringBuilder hashData = new StringBuilder();
+        for (Map.Entry<String, String> entry : vnp_Params.entrySet()) {
+            if (hashData.length() > 0) {
+                hashData.append("&");
+            }
+            hashData.append(entry.getKey()).append("=").append(entry.getValue());
+        }
+        String secureHash = alo(config.getHashSecret(), hashData.toString());
+        vnp_Params.put("vnp_SecureHash", secureHash);
+
 
         Calendar expire = Calendar.getInstance();
         expire.setTimeZone(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -120,6 +141,14 @@ public class VnPayController {
 
 
         return ResponseEntity.ok(Map.of("url", redirectUrl));
+    }
+
+    public static String alo(String key, String data) throws Exception {
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
+        Mac mac = Mac.getInstance("HmacSHA512");
+        mac.init(secretKeySpec);
+        byte[] hmacBytes = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
+        return Hex.encodeHexString(hmacBytes).toUpperCase();
     }
 
 }

@@ -56,6 +56,7 @@ public class OrdersServiceImpl implements OrdersService {
         orders.setTotal(total+20000);
         orders.setOrders_items(orders_items);
 
+        // xoa tat ca trong cartitem.
         orderRepository.save(orders);
     }
 }

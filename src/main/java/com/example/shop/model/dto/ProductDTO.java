@@ -22,5 +22,5 @@ public class ProductDTO {
     private Long brand;
     private Long categories;
     private List<Long> memories;
-    private boolean bestseller;
+    private int bestseller;
 }
