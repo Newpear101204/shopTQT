@@ -8,6 +8,7 @@ import com.example.shop.model.request.ProductRequest;
 import com.example.shop.model.request.ProductToCartRequest;
 import com.example.shop.model.response.CartItemResponse;
 import com.example.shop.model.response.LoginResponse;
+import com.example.shop.model.response.OrderResponse;
 import com.example.shop.model.response.ProductResponse;
 import com.example.shop.service.CartItemService;
 import com.example.shop.service.OrdersService;
@@ -143,6 +144,11 @@ public class usersApi {
     @PostMapping("/order")
     public void Order (@RequestBody OrderRequest orderRequest){
         ordersService.addOrder(orderRequest);
+    }
+
+    @GetMapping ("/order")
+    public List<OrderResponse> GetOrder (){
+        return ordersService.listOrders();
     }
 
 

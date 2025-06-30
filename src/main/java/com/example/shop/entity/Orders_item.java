@@ -20,6 +20,9 @@ public class Orders_item extends  BaseEntity{
     @Column(name ="quantity")
     private int quantity;
 
+    @Column(name ="memories_id")
+    private Long memoriesId;
+
     @Column(name ="price")
     private Float price ;
 
