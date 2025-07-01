@@ -139,7 +139,11 @@ public class UsersServiceImpl implements UsersService {
 
         if (existingItemOpt.isPresent()) {
             Cart_Item existingItem = existingItemOpt.get();
-            existingItem.setNumber(productToCartRequest.getNumber());
+            if (productToCartRequest.isUpdate()){
+                existingItem.setNumber(productToCartRequest.getNumber());
+            } else {
+                existingItem.setNumber(existingItem.getNumber() + productToCartRequest.getNumber());
+            }
             cartItemRepository.save(existingItem);
         } else {
             Cart_Item cartItem = new Cart_Item();

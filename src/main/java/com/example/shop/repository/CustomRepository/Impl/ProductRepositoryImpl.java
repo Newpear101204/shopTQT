@@ -1,5 +1,6 @@
 package com.example.shop.repository.CustomRepository.Impl;
 
+import com.example.shop.entity.Cart_Item;
 import com.example.shop.entity.Product;
 import com.example.shop.entity.Users;
 import com.example.shop.model.request.ProductRequest;
@@ -7,10 +8,12 @@ import com.example.shop.repository.CustomRepository.ProductRepositoryCustom;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Transactional
 @Repository
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
     @PersistenceContext
@@ -41,5 +44,16 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         Query quey = entityManager.createNativeQuery(sql.toString(), Product.class);
         List<Product> arr = quey.getResultList();
         return quey.getResultList();
+    }
+
+    @Override
+    public void deleteCart(Long id) {
+        StringBuilder sql = new StringBuilder("DELETE FROM cart_item WHERE id = " + id);
+        Query quey = entityManager.createNativeQuery(sql.toString() , Cart_Item.class);
+        //    quey.getResultList();
+        int rowsAffected = quey.executeUpdate(); // Thực thi lệnh DELETE
+
+        System.out.println("SQL executed: " + sql.toString());
+        System.out.println("Rows affected: " + rowsAffected);
     }
 }

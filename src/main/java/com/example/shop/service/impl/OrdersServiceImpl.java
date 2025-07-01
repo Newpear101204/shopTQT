@@ -27,6 +27,8 @@ public class OrdersServiceImpl implements OrdersService {
     @Autowired
     private CartItemRepository cartItemRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public void addOrder(OrderRequest orderRequest) {
@@ -46,22 +48,17 @@ public class OrdersServiceImpl implements OrdersService {
         for (Cart_Item cartItem : cartItems) {
             Orders_item orders_item = new Orders_item();
             orders_item.setProduct(cartItem.getProduct());
-            orders_item.setMemoriesId(cartItem.getMemoriesId());
+            orders_item.setMemoriesId(memoriesRepository.findByCapacity(cartItem.getMemoriesId().toString()).getId());
             orders_item.setPrice(cartItem.getProduct().getPrice());
             orders_item.setQuantity(cartItem.getNumber());
             orders_item.setOrders(orders); // Thiết lập quan hệ ngược lại
             orders_items.add(orders_item);
             total += (cartItem.getProduct().getPrice()*cartItem.getNumber());
+            productRepository.deleteCart(cartItem.getId());
         }
         orders.setTotal(total+20000);
         orders.setOrders_items(orders_items);
 
-        // xoa tat ca trong cartitem.
-        List<Cart_Item> list = user.getCart_items();
-        for (Cart_Item cartItem : list) {
-            cartItemRepository.deleteById(cartItem.getId());
-        }
-        
         orderRepository.save(orders);
     }
 
@@ -82,7 +79,9 @@ public class OrdersServiceImpl implements OrdersService {
                 orderResponse.setName(product.getName());
                 orderResponse.setPrice(product.getPrice());
                 orderResponse.setAddress(order.getShippingAdress());
-                orderResponse.setCapicity(memoriesRepository.findById(orders_item.getId()).get().getCapacity());
+                orderResponse.setNumber(orders_item.getQuantity());
+                orderResponse.setPaymentMethod(order.getPaymentMethod());
+                orderResponse.setCapicity(memoriesRepository.findById(orders_item.getMemoriesId()).get().getCapacity());
                 orderResponse.setImages(product.getProductImages().get(0).getUrl());
                 orderResponses.add(orderResponse);
             }

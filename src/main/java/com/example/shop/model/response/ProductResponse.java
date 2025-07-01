@@ -23,5 +23,5 @@ public class ProductResponse {
     private String brands;
     private String categories;
     private List<String> memories;
-    private int bestseller;
+    private boolean bestseller;
 }

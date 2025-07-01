@@ -83,6 +83,7 @@ public class SecurityConfig {
                             .requestMatchers(POST,"/shopqtq/cart").hasAnyRole("CUS")
                             .requestMatchers(GET,"/shopqtq/cart").hasAnyRole("CUS")
                             .requestMatchers(GET,"/shopqtq/order").hasAnyRole("CUS")
+                            .requestMatchers(POST,"/shopqtq/order").hasAnyRole("CUS")
                             .requestMatchers(GET,"/shopqtq/cart").hasAnyRole("CUS")
                             .requestMatchers(POST,"/api/vnpay/create-payment").hasAnyRole("CUS")
                             .requestMatchers(GET,"/api/vnpay/vnpay-return").permitAll() // Cho phép truy cập callback mà không cần auth

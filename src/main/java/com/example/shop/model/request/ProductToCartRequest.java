@@ -15,4 +15,5 @@ public class ProductToCartRequest {
     Long productId;
     Long memoriesId;
     int number;
+    boolean update;
 }

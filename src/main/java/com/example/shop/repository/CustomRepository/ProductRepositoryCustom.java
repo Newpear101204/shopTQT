@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ProductRepositoryCustom {
     List<Product> searchProducts (ProductRequest productRequest);
+
+    void deleteCart (Long id);
 }

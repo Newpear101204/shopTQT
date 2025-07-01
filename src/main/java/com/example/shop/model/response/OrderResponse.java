@@ -15,10 +15,11 @@ public class OrderResponse {
     Long id;
     String name;
     String address;
-    String number;
+    Integer number;
     Float price;
     Date date;
     String status;
     String capicity;
     String images;
+    String paymentMethod;
 }
