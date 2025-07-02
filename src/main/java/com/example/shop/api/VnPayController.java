@@ -8,7 +8,9 @@ import com.example.shop.entity.Orders_item;
 import com.example.shop.entity.Users;
 import com.example.shop.model.request.OrderRequest;
 import com.example.shop.model.request.OrdersRequest;
+import com.example.shop.repository.MemoriesRepository;
 import com.example.shop.repository.OrderRepository;
+import com.example.shop.repository.ProductRepository;
 import com.example.shop.repository.UsersRepository;
 import com.example.shop.util.VnPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,6 +41,12 @@ public class VnPayController {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private MemoriesRepository memoriesRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @PostMapping("/create-payment")
     public ResponseEntity<?> createPayment(@RequestBody OrderRequest request, HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
@@ -140,10 +148,12 @@ public class VnPayController {
                 Orders_item item = new Orders_item();
                 item.setOrders(orders);
                 item.setProduct(cartItem.getProduct());
+                item.setMemoriesId(memoriesRepository.findByCapacity(cartItem.getMemoriesId().toString()).getId());
                 item.setQuantity(cartItem.getNumber());
                 item.setPrice(cartItem.getProduct().getPrice());
                 orders_items.add(item);
                 total += item.getQuantity() * item.getPrice();
+                productRepository.deleteCart(cartItem.getId());
             }
 
             orders.setTotal(total + 20000);
