@@ -82,11 +82,15 @@ public class SecurityConfig {
                             .requestMatchers(DELETE, "/shopqtq/deleteproductimage").hasAnyRole("ADMIN")
                             .requestMatchers(POST,"/shopqtq/cart").hasAnyRole("CUS")
                             .requestMatchers(GET,"/shopqtq/cart").hasAnyRole("CUS")
-                            .requestMatchers(GET,"/shopqtq/order").hasAnyRole("CUS")
-                            .requestMatchers(POST,"/shopqtq/order").hasAnyRole("CUS")
+                            .requestMatchers(GET,"/shopqtq/order").hasAnyRole("CUS", "ADMIN")
+                            .requestMatchers(POST,"/shopqtq/order").hasAnyRole("CUS", "ADMIN")
+                            .requestMatchers(GET,"/shopqtq/orderadmin").hasAnyRole("CUS", "ADMIN")
                             .requestMatchers(GET,"/shopqtq/cart").hasAnyRole("CUS")
                             .requestMatchers(POST,"/api/vnpay/create-payment").hasAnyRole("CUS")
-                            .requestMatchers(GET,"/api/vnpay/vnpay-return").permitAll() // Cho phép truy cập callback mà không cần auth
+                            .requestMatchers(GET,"/api/vnpay/vnpay-return").permitAll()
+                            .requestMatchers(GET,"/shopqtq/getUsers").hasAnyRole("ADMIN")
+                            .requestMatchers(GET,"/shopqtq/getOrder/{id}").hasAnyRole("ADMIN")
+                            .requestMatchers(POST,"/shopqtq/approveOrder/{id}").hasAnyRole("ADMIN")
                             .anyRequest().authenticated();
 
                 });

@@ -6,10 +6,8 @@ import com.example.shop.model.dto.RegisterDTO;
 import com.example.shop.model.request.OrderRequest;
 import com.example.shop.model.request.ProductRequest;
 import com.example.shop.model.request.ProductToCartRequest;
-import com.example.shop.model.response.CartItemResponse;
-import com.example.shop.model.response.LoginResponse;
-import com.example.shop.model.response.OrderResponse;
-import com.example.shop.model.response.ProductResponse;
+import com.example.shop.model.request.Requests;
+import com.example.shop.model.response.*;
 import com.example.shop.service.CartItemService;
 import com.example.shop.service.OrdersService;
 import com.example.shop.service.ProductService;
@@ -151,5 +149,24 @@ public class usersApi {
         return ordersService.listOrders();
     }
 
+    @GetMapping ("/getUsers")
+    public List<Requests> getUsers(){
+        return usersService.listOrderUser();
 
+    }
+
+    @GetMapping ("/getOrder/{id}")
+    public List<OrderAdminResponse> listOrdesOfUser (@PathVariable List<Long> id){
+        return usersService.listOrderAdmin(id);
+    }
+
+    @PostMapping("/approveOrder/{id}")
+    public void approveOrder(@PathVariable Long id) {
+        ordersService.approve(id);
+    }
+
+    @GetMapping ("/orderadmin")
+    public List<OrderResponse> GetOrderAdmin (){
+        return ordersService.listOrdersAdmin();
+    }
 }

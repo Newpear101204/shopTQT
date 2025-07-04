@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
@@ -67,6 +68,44 @@ public class OrdersServiceImpl implements OrdersService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = UsersRepository.findByUsername(username);
         List<Orders> orders = user.getOrders();
+        List<OrderResponse> orderResponses = new ArrayList<>();
+        for (Orders order : orders) {
+            List<Orders_item> orders_items = order.getOrders_items();
+            for (Orders_item orders_item : orders_items) {
+                Product product = orders_item.getProduct();
+                OrderResponse orderResponse = new OrderResponse();
+                orderResponse.setId(orders_item.getId());
+                orderResponse.setDate(order.getCreatedDate());
+                orderResponse.setStatus(order.getStatus());
+                orderResponse.setName(product.getName());
+                orderResponse.setPrice(product.getPrice());
+                orderResponse.setAddress(order.getShippingAdress());
+                orderResponse.setNumber(orders_item.getQuantity());
+                orderResponse.setPaymentMethod(order.getPaymentMethod());
+                orderResponse.setCapicity(memoriesRepository.findById(orders_item.getMemoriesId()).get().getCapacity());
+                orderResponse.setImages(product.getProductImages().get(0).getUrl());
+                orderResponses.add(orderResponse);
+            }
+        }
+
+        System.out.println("stesst");
+
+        return orderResponses;
+    }
+
+    @Override
+    public void approve(Long id) {
+        Optional<Orders> orderOpt = orderRepository.findById(id);
+        if (orderOpt.isPresent()) {
+            Orders order = orderOpt.get();
+            order.setStatus("APPROVE");
+            orderRepository.save(order);
+        }
+    }
+
+    @Override
+    public List<OrderResponse> listOrdersAdmin() {
+        List<Orders> orders = orderRepository.findAll();
         List<OrderResponse> orderResponses = new ArrayList<>();
         for (Orders order : orders) {
             List<Orders_item> orders_items = order.getOrders_items();

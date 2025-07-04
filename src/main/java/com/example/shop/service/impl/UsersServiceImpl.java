@@ -1,16 +1,17 @@
 package com.example.shop.service.impl;
 
-import com.example.shop.entity.Cart_Item;
-import com.example.shop.entity.Product;
-import com.example.shop.entity.Users;
+import com.example.shop.entity.*;
 import com.example.shop.exception.customException.AccountExist;
 import com.example.shop.exception.customException.DataNotFoundException;
 import com.example.shop.exception.customException.DuplicatedUsername;
 import com.example.shop.model.dto.LoginDTO;
 import com.example.shop.model.dto.RegisterDTO;
 import com.example.shop.model.request.ProductToCartRequest;
+import com.example.shop.model.request.Requests;
 import com.example.shop.model.response.LoginResponse;
+import com.example.shop.model.response.OrderAdminResponse;
 import com.example.shop.repository.CartItemRepository;
+import com.example.shop.repository.MemoriesRepository;
 import com.example.shop.repository.ProductRepository;
 import com.example.shop.repository.UsersRepository;
 import com.example.shop.service.UsersService;
@@ -54,8 +55,8 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private ModelMapper modelMapper;
 
-
-
+    @Autowired
+    private MemoriesRepository memoriesRepository;
 
     @Override
     public LoginResponse login(LoginDTO loginDTO) {
@@ -153,6 +154,46 @@ public class UsersServiceImpl implements UsersService {
             cartItem.setNumber(productToCartRequest.getNumber());
             cartItemRepository.save(cartItem);
         }
+    }
+
+    @Override
+    public  List<Requests> listOrderUser() {
+        List<Users> list = usersRepository.findByRoles("CUS");
+        List<Requests> listRequests = new ArrayList<>();
+        for (Users users : list) {
+            Requests requests = new Requests();
+            requests.setId(users.getId());
+            listRequests.add(requests);
+        }
+        return listRequests;
+    }
+
+    @Override
+    public List<OrderAdminResponse> listOrderAdmin(List<Long> ids) {
+        List<OrderAdminResponse> orderResponses = new ArrayList<>();
+        for (Long id : ids){
+            Users user = usersRepository.findById(id).get();
+            List<Orders> orders = user.getOrders();
+            for (Orders order : orders) {
+                List<Orders_item> orders_items = order.getOrders_items();
+                for (Orders_item orders_item : orders_items) {
+                    Product product = orders_item.getProduct();
+                    OrderAdminResponse orderResponse = new OrderAdminResponse();
+                    orderResponse.setId(order.getId());
+                    orderResponse.setDate(order.getCreatedDate());
+                    orderResponse.setStatus(order.getStatus());
+                    orderResponse.setProductName(product.getName());
+                    orderResponse.setPrice(product.getPrice());
+                    orderResponse.setAdress(order.getShippingAdress());
+                    orderResponse.setCapicity(memoriesRepository.findById(orders_item.getMemoriesId()).get().getCapacity());
+                    orderResponse.setImage(product.getProductImages().get(0).getUrl());
+                    orderResponse.setUsername(user.getUsername());
+                    orderResponses.add(orderResponse);
+                }
+            }
+        }
+        return orderResponses;
+
     }
 
 }

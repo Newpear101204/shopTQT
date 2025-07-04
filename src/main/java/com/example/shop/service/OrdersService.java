@@ -11,4 +11,6 @@ import java.util.List;
 public interface OrdersService {
     void addOrder(OrderRequest orderRequest);
     List<OrderResponse> listOrders();
+    void approve(Long id);
+    List<OrderResponse> listOrdersAdmin();
 }
